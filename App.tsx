@@ -110,7 +110,7 @@ export default function App() {
         </Text>
         <Text
             style={styles.textLink}
-            onPress={() => openUrl("https://twitter.com/Seseren_kr")}
+            onPress={() => openUrl("https://github.com/PrandiFabiel/herta-kururin")}
           >
             Kuru kuru repo
           </Text>
