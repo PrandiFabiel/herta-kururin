@@ -9,6 +9,8 @@ import {
   Platform,
   Image,
   Linking,
+  ImageBackground,
+  ImageSourcePropType,
 } from "react-native";
 import { AVPlaybackSource, Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -19,14 +21,34 @@ const requires: AVPlaybackSource[] = [
   require("./assets/audio/kuru2.mp3"),
 ];
 
+const requiresImgs: ImageSourcePropType[] = [
+  require("./assets/hertaimgs/hertaa1.gif"),
+  require("./assets/hertaimgs/hertaa2.gif"),
+];
+
 export default function App() {
   const [sound, setSound] = useState<Audio.Sound>();
   const [firstClick, setFirstClick] = useState<boolean>(true);
   const [audio, setAudio] = useState<AVPlaybackSource>(requires[0]);
   const [count, setCount] = useState<number>(0);
+  const [displayImg, setDisplayImg] = useState<boolean>(false);
+  const [randomImg, setRandomImg] = useState<ImageSourcePropType>(
+    requiresImgs[0]
+  );
+
+  const showHerta = () => {
+    setDisplayImg(true);
+  };
+
+  const hiddeHerta = () => {
+    setDisplayImg(false);
+  };
 
   const playRandomSound = async () => {
     setCount(count + 1);
+    const randomIndexImg = Math.floor(Math.random() * requiresImgs.length);
+    setRandomImg(requiresImgs[randomIndexImg]);
+    showHerta();
     if (firstClick) {
       console.log("emtro");
       setFirstClick(false);
@@ -41,6 +63,9 @@ export default function App() {
 
     await AsyncStorage.setItem("count", count.toString());
     await sound.playAsync();
+    setTimeout(() => {
+      hiddeHerta();
+    }, 2000);
   };
 
   const openUrl = (url: string) => {
@@ -67,6 +92,16 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
       <Text style={styles.title}>Welcome to kuru kuru</Text>
+      <ImageBackground
+        source={randomImg}
+        style={{
+          flex: 1,
+          width: "100%",
+          height: 480,
+          display: displayImg ? "flex" : "none",
+          position: "absolute"
+        }}
+      ></ImageBackground>
       <View style={styles.viewButton}>
         <Text style={styles.textCount}>Kururus?</Text>
         <Text style={styles.textCount}>{count}</Text>
@@ -109,11 +144,13 @@ export default function App() {
           You can check out the GitHub repository here:{" "}
         </Text>
         <Text
-            style={styles.textLink}
-            onPress={() => openUrl("https://github.com/PrandiFabiel/herta-kururin")}
-          >
-            Kuru kuru repo
-          </Text>
+          style={styles.textLink}
+          onPress={() =>
+            openUrl("https://github.com/PrandiFabiel/herta-kururin")
+          }
+        >
+          Kuru kuru repo
+        </Text>
       </View>
     </SafeAreaView>
   );
